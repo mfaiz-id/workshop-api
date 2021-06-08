@@ -26,7 +26,29 @@ exports.get_task = async function(req, res, next) {
         return res.status(500).json({ msg: 'Internal server error' });
     }
 };
-
+exports.get_detail = async function(req, res, next) {
+    try{        
+        let query = `select * from tasks t where t.id = ${req.query.id} `
+        const cek_task = await knex.raw(query);
+        const jumlah_data = parseInt(cek_task[0].length)
+        if(jumlah_data==0){
+            res.status(200).json({
+                success:false,
+                message:"Data tidak ditemukan",
+                data: cek_task[0]
+            });
+        }else{
+            res.status(200).json({
+                success:true,
+                message:"Data ditemukan",
+                data:cek_task[0],
+            });
+        }
+    } catch (err){
+        console.log(err)
+        return res.status(500).json({ msg: 'Internal server error' });
+    }
+};
 exports.submit = async function(req, res, next) {
     try{      
         const id = req.body.id; 
